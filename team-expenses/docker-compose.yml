@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: team-expenses-db
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: team_expenses
+      POSTGRES_PASSWORD: team_expenses_dev
+      POSTGRES_DB: team_expenses
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  db-test:
+    image: postgres:15-alpine
+    container_name: team-expenses-db-test
+    restart: unless-stopped
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: team_expenses
+      POSTGRES_PASSWORD: team_expenses_dev
+      POSTGRES_DB: team_expenses_test
+
+volumes:
+  pgdata:

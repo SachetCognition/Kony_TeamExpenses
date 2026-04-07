@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id        String            @id
+  name      String
+  isAdmin   Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  expenses  EmployeeExpense[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  expenses    Expense[]
+}
+
+model Expense {
+  id          Int               @id @default(autoincrement())
+  name        String
+  expenditure Decimal           @db.Decimal(12, 2)
+  categoryId  Int
+  date        DateTime          @default(now())
+  category    Category          @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  employees   EmployeeExpense[]
+}
+
+model EmployeeExpense {
+  expenseId     Int
+  employeeId    String
+  employeeShare Decimal  @db.Decimal(12, 2)
+  comment       String?
+  status        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  expense       Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  employee      Employee @relation(fields: [employeeId], references: [id])
+
+  @@id([expenseId, employeeId])
+}
