@@ -104,6 +104,7 @@ export class ExpenseService {
           where: { expenseId_employeeId: { expenseId, employeeId } },
           data: {
             employeeShare: individualShare,
+            comment: data.comment || null,
             ...(shareChanged ? { status: false } : {}),
           },
         });

@@ -22,7 +22,7 @@ export default function DashboardPage() {
       )
     : employeeShares;
 
-  const totalOwed = filteredShares.reduce((sum, s) => sum + s.totalShare, 0);
+  const totalOwed = employeeShares.reduce((sum, s) => sum + s.totalShare, 0);
 
   return (
     <div className="max-w-7xl mx-auto p-6">

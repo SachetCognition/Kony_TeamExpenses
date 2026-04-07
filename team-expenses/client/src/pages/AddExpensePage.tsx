@@ -13,7 +13,7 @@ export default function AddExpensePage() {
   const [categoryId, setCategoryId] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [comment, setComment] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().substring(0, 10));
+  const [date, setDate] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; });
   const [error, setError] = useState('');
 
   const toggleEmployee = (id: string) => {
