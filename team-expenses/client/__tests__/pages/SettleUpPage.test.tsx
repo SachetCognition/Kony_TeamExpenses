@@ -5,8 +5,12 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import SettleUpPage from '../../src/pages/SettleUpPage';
 
 vi.mock('../../src/api/hooks', () => ({
-  useEmployee: vi.fn(() => ({
-    data: { id: 'EMP002', name: 'Ravi', isAdmin: false },
+  useEmployees: vi.fn(() => ({
+    data: [
+      { id: 'EMP001', name: 'Haritha', isAdmin: true },
+      { id: 'EMP002', name: 'Ravi', isAdmin: false },
+      { id: 'EMP003', name: 'Priya', isAdmin: false },
+    ],
     isLoading: false,
   })),
   useUnsettledExpenses: vi.fn(() => ({
@@ -51,19 +55,20 @@ describe('SettleUpPage', () => {
   it('TC-F-006: updates amount when expense dropdown changes', () => {
     renderWithProviders(<SettleUpPage />);
 
-    // Employee name should be readonly
-    const empName = screen.getByTestId('employee-name');
-    expect(empName).toHaveTextContent('Ravi');
+    // Employee name should be shown
+    const empField = screen.getByTestId('settle-employee') as HTMLInputElement;
+    expect(empField.value).toContain('Ravi');
 
     // Default amount should show first expense share
-    const amountField = screen.getByTestId('settle-amount');
-    expect(amountField).toHaveTextContent('1000');
+    const amountField = screen.getByTestId('settle-amount') as HTMLInputElement;
+    expect(amountField.value).toContain('1000');
 
     // Change expense selection
-    const expenseSelect = screen.getByTestId('expense-select');
+    const expenseSelect = screen.getByTestId('settle-expense-select');
     fireEvent.change(expenseSelect, { target: { value: '2' } });
 
     // Amount should update to second expense's share
-    expect(screen.getByTestId('settle-amount')).toHaveTextContent('750');
+    const updatedAmount = screen.getByTestId('settle-amount') as HTMLInputElement;
+    expect(updatedAmount.value).toContain('750');
   });
 });

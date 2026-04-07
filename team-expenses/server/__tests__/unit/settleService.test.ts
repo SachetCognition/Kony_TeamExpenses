@@ -63,7 +63,7 @@ describe('SettleService', () => {
 
       expect(mockPrisma.employeeExpense.findMany).toHaveBeenCalledWith({
         where: { employeeId: 'EMP001', status: false },
-        include: { expense: { select: { name: true } } },
+        include: { expense: { select: { id: true, name: true, expenditure: true } } },
       });
       expect(result).toHaveLength(2);
     });

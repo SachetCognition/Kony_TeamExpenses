@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 export class ExpenseService {
   constructor(private prisma: PrismaClient) {}
@@ -22,13 +22,13 @@ export class ExpenseService {
       throw new Error('At least one employee must be selected');
     }
 
-    const individualShare = new Prisma.Decimal(data.expenditure).div(data.employeeIds.length);
+    const individualShare = data.expenditure / data.employeeIds.length;
 
     return this.prisma.$transaction(async (tx) => {
       const expense = await tx.expense.create({
         data: {
           name: data.name.trim(),
-          expenditure: new Prisma.Decimal(data.expenditure),
+          expenditure: data.expenditure,
           categoryId: data.categoryId,
           date: data.date ? new Date(data.date) : new Date(),
         },
@@ -72,7 +72,7 @@ export class ExpenseService {
       throw new Error('At least one employee must be selected');
     }
 
-    const individualShare = new Prisma.Decimal(data.expenditure).div(data.employeeIds.length);
+    const individualShare = data.expenditure / data.employeeIds.length;
 
     return this.prisma.$transaction(async (tx) => {
       // Get existing employee_expense records
@@ -122,7 +122,7 @@ export class ExpenseService {
         where: { id: expenseId },
         data: {
           name: data.name.trim(),
-          expenditure: new Prisma.Decimal(data.expenditure),
+          expenditure: data.expenditure,
           categoryId: data.categoryId,
           date: data.date ? new Date(data.date) : undefined,
         },

@@ -54,7 +54,7 @@ describe('AddExpensePage', () => {
     const submitBtn = screen.getByTestId('submit-btn');
     fireEvent.click(submitBtn);
     // Should show validation errors for empty fields
-    expect(screen.getByTestId('name-error') || screen.getByText(/required/i)).toBeTruthy();
+    expect(screen.getByTestId('error-message')).toHaveTextContent(/required/i);
   });
 
   // TC-F-004: Select All / Clear All toggles

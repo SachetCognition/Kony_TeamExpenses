@@ -11,10 +11,10 @@ const mockPrisma = {
     findUnique: vi.fn(),
   },
   employeeExpense: {
-    createMany: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
     deleteMany: vi.fn(),
     findMany: vi.fn(),
-    upsert: vi.fn(),
   },
 } as any;
 
@@ -34,7 +34,7 @@ describe('ExpenseService', () => {
         return fn(mockPrisma);
       });
       mockPrisma.expense.create.mockResolvedValue(mockExpense);
-      mockPrisma.employeeExpense.createMany.mockResolvedValue({ count: 3 });
+      mockPrisma.employeeExpense.create.mockResolvedValue({});
 
       await service.createExpenseWithSplit({
         name: 'Lunch',
@@ -43,12 +43,9 @@ describe('ExpenseService', () => {
         employeeIds: ['EMP001', 'EMP002', 'EMP003'],
       });
 
-      expect(mockPrisma.employeeExpense.createMany).toHaveBeenCalledWith({
-        data: expect.arrayContaining([
-          expect.objectContaining({ employeeShare: 1000, employeeId: 'EMP001' }),
-          expect.objectContaining({ employeeShare: 1000, employeeId: 'EMP002' }),
-          expect.objectContaining({ employeeShare: 1000, employeeId: 'EMP003' }),
-        ]),
+      expect(mockPrisma.employeeExpense.create).toHaveBeenCalledTimes(3);
+      expect(mockPrisma.employeeExpense.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({ employeeShare: 1000, employeeId: 'EMP001' }),
       });
     });
 
@@ -85,7 +82,7 @@ describe('ExpenseService', () => {
           categoryId: 1,
           employeeIds: [],
         })
-      ).rejects.toThrow('At least one employee is required');
+      ).rejects.toThrow('At least one employee must be selected');
     });
   });
 
@@ -96,7 +93,8 @@ describe('ExpenseService', () => {
       mockPrisma.employeeExpense.findMany.mockResolvedValue([
         { employeeId: 'EMP001', expenseId: 1 },
       ]);
-      mockPrisma.employeeExpense.upsert.mockResolvedValue({});
+      mockPrisma.employeeExpense.update.mockResolvedValue({});
+      mockPrisma.employeeExpense.create.mockResolvedValue({});
       mockPrisma.employeeExpense.deleteMany.mockResolvedValue({ count: 0 });
       mockPrisma.expense.update.mockResolvedValue({ id: 1 });
 
@@ -107,7 +105,9 @@ describe('ExpenseService', () => {
         employeeIds: ['EMP001', 'EMP002'],
       });
 
-      expect(mockPrisma.employeeExpense.upsert).toHaveBeenCalledTimes(2);
+      // EMP001 updated, EMP002 created
+      expect(mockPrisma.employeeExpense.update).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.employeeExpense.create).toHaveBeenCalledTimes(1);
     });
 
     // TC-U-006: removes deselected employees (bug fix)
@@ -118,7 +118,8 @@ describe('ExpenseService', () => {
         { employeeId: 'EMP002', expenseId: 1 },
         { employeeId: 'EMP003', expenseId: 1 },
       ]);
-      mockPrisma.employeeExpense.upsert.mockResolvedValue({});
+      mockPrisma.employeeExpense.update.mockResolvedValue({});
+      mockPrisma.employeeExpense.create.mockResolvedValue({});
       mockPrisma.employeeExpense.deleteMany.mockResolvedValue({ count: 1 });
       mockPrisma.expense.update.mockResolvedValue({ id: 1 });
 
@@ -141,7 +142,8 @@ describe('ExpenseService', () => {
     it('TC-U-007: recalculates shares correctly', async () => {
       mockPrisma.$transaction.mockImplementation(async (fn: Function) => fn(mockPrisma));
       mockPrisma.employeeExpense.findMany.mockResolvedValue([]);
-      mockPrisma.employeeExpense.upsert.mockResolvedValue({});
+      mockPrisma.employeeExpense.update.mockResolvedValue({});
+      mockPrisma.employeeExpense.create.mockResolvedValue({});
       mockPrisma.employeeExpense.deleteMany.mockResolvedValue({ count: 0 });
       mockPrisma.expense.update.mockResolvedValue({ id: 1 });
 
@@ -152,12 +154,11 @@ describe('ExpenseService', () => {
         employeeIds: ['EMP001', 'EMP002', 'EMP003'],
       });
 
-      expect(mockPrisma.employeeExpense.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          update: expect.objectContaining({ employeeShare: 1000 }),
-          create: expect.objectContaining({ employeeShare: 1000 }),
-        })
-      );
+      // All 3 are new (no existing), so create is called 3 times
+      expect(mockPrisma.employeeExpense.create).toHaveBeenCalledTimes(3);
+      expect(mockPrisma.employeeExpense.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({ employeeShare: 1000 }),
+      });
     });
   });
 

@@ -82,7 +82,7 @@ describe('Settle API Integration', () => {
     const res = await request(app).get('/api/employees/EMP002/unsettled');
     expect(res.status).toBe(200);
     expect(res.body.length).toBe(1);
-    expect(res.body[0].employeeId).toBe('EMP002');
+    expect(res.body[0].expenseId).toBe(expenseId);
 
     const res2 = await request(app).get('/api/employees/EMP001/unsettled');
     expect(res2.body.length).toBe(0);

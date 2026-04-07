@@ -1,50 +1,41 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import EditExpensePage from '../../src/pages/EditExpensePage';
 
+// Stable references to prevent infinite re-render loops in useEffect
+const expenseData = {
+  id: 1,
+  name: 'Team Lunch',
+  expenditure: 3000,
+  categoryId: 1,
+  date: '2024-01-15',
+  employees: [
+    { employeeId: 'EMP002', name: 'Ravi', employeeShare: 1000, status: false },
+    { employeeId: 'EMP003', name: 'Priya', employeeShare: 1000, status: false },
+    { employeeId: 'EMP004', name: 'Amit', employeeShare: 1000, status: false },
+  ],
+};
+const categoriesData = [
+  { id: 1, name: 'Food', description: 'Meals and snacks' },
+  { id: 2, name: 'Travel', description: 'Transportation' },
+];
+const employeesData = [
+  { id: 'EMP001', name: 'Haritha', isAdmin: true },
+  { id: 'EMP002', name: 'Ravi', isAdmin: false },
+  { id: 'EMP003', name: 'Priya', isAdmin: false },
+  { id: 'EMP004', name: 'Amit', isAdmin: false },
+  { id: 'EMP005', name: 'Sneha', isAdmin: false },
+];
+const mutateFn = vi.fn();
+
 vi.mock('../../src/api/hooks', () => ({
-  useExpense: vi.fn(() => ({
-    data: {
-      id: 1,
-      name: 'Team Lunch',
-      expenditure: 3000,
-      categoryId: 1,
-      date: '2024-01-15',
-      employees: [
-        { employeeId: 'EMP002', name: 'Ravi', employeeShare: 1000, status: false },
-        { employeeId: 'EMP003', name: 'Priya', employeeShare: 1000, status: false },
-        { employeeId: 'EMP004', name: 'Amit', employeeShare: 1000, status: false },
-      ],
-    },
-    isLoading: false,
-  })),
-  useCategories: vi.fn(() => ({
-    data: [
-      { id: 1, name: 'Food', description: 'Meals and snacks' },
-      { id: 2, name: 'Travel', description: 'Transportation' },
-    ],
-    isLoading: false,
-  })),
-  useEmployees: vi.fn(() => ({
-    data: [
-      { id: 'EMP001', name: 'Haritha', isAdmin: true },
-      { id: 'EMP002', name: 'Ravi', isAdmin: false },
-      { id: 'EMP003', name: 'Priya', isAdmin: false },
-      { id: 'EMP004', name: 'Amit', isAdmin: false },
-      { id: 'EMP005', name: 'Sneha', isAdmin: false },
-    ],
-    isLoading: false,
-  })),
-  useUpdateExpense: vi.fn(() => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
-  })),
-  useDeleteExpense: vi.fn(() => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
-  })),
+  useExpense: () => ({ data: expenseData, isLoading: false }),
+  useCategories: () => ({ data: categoriesData, isLoading: false }),
+  useEmployees: () => ({ data: employeesData, isLoading: false }),
+  useUpdateExpense: () => ({ mutateAsync: mutateFn, isPending: false }),
+  useDeleteExpense: () => ({ mutateAsync: mutateFn, isPending: false }),
 }));
 
 vi.mock('react-router-dom', async () => {
@@ -73,13 +64,15 @@ describe('EditExpensePage', () => {
   });
 
   // TC-F-005: Pre-populates form fields
-  it('TC-F-005: pre-populates form fields from expense data', () => {
+  it('TC-F-005: pre-populates form fields from expense data', async () => {
     renderWithProviders(<EditExpensePage />);
 
-    const nameInput = screen.getByTestId('expense-name-input') as HTMLInputElement;
-    expect(nameInput.value).toBe('Team Lunch');
+    await waitFor(() => {
+      const nameInput = screen.getByTestId('expense-name') as HTMLInputElement;
+      expect(nameInput.value).toBe('Team Lunch');
+    });
 
-    const amountInput = screen.getByTestId('expense-amount-input') as HTMLInputElement;
+    const amountInput = screen.getByTestId('expense-amount') as HTMLInputElement;
     expect(amountInput.value).toBe('3000');
 
     // Check that existing employees are selected
