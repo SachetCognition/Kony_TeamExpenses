@@ -99,7 +99,7 @@ export class ExpenseService {
       for (const employeeId of toUpdate) {
         await tx.employeeExpense.update({
           where: { expenseId_employeeId: { expenseId, employeeId } },
-          data: { employeeShare: individualShare },
+          data: { employeeShare: individualShare, status: false },
         });
       }
 

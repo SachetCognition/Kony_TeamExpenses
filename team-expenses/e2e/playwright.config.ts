@@ -26,7 +26,7 @@ export default defineConfig({
       port: 3001,
       reuseExistingServer: !process.env.CI,
       env: {
-        DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/team_expenses',
+        DATABASE_URL: 'postgresql://team_expenses:team_expenses_dev@localhost:5432/team_expenses',
       },
     },
     {
