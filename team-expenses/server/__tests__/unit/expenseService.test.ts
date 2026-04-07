@@ -91,7 +91,7 @@ describe('ExpenseService', () => {
     it('TC-U-005: adds new employees to split', async () => {
       mockPrisma.$transaction.mockImplementation(async (fn: Function) => fn(mockPrisma));
       mockPrisma.employeeExpense.findMany.mockResolvedValue([
-        { employeeId: 'EMP001', expenseId: 1 },
+        { employeeId: 'EMP001', expenseId: 1, employeeShare: 1000 },
       ]);
       mockPrisma.employeeExpense.update.mockResolvedValue({});
       mockPrisma.employeeExpense.create.mockResolvedValue({});
@@ -114,9 +114,9 @@ describe('ExpenseService', () => {
     it('TC-U-006: removes deselected employees from split', async () => {
       mockPrisma.$transaction.mockImplementation(async (fn: Function) => fn(mockPrisma));
       mockPrisma.employeeExpense.findMany.mockResolvedValue([
-        { employeeId: 'EMP001', expenseId: 1 },
-        { employeeId: 'EMP002', expenseId: 1 },
-        { employeeId: 'EMP003', expenseId: 1 },
+        { employeeId: 'EMP001', expenseId: 1, employeeShare: 1000 },
+        { employeeId: 'EMP002', expenseId: 1, employeeShare: 1000 },
+        { employeeId: 'EMP003', expenseId: 1, employeeShare: 1000 },
       ]);
       mockPrisma.employeeExpense.update.mockResolvedValue({});
       mockPrisma.employeeExpense.create.mockResolvedValue({});

@@ -78,9 +78,10 @@ export class ExpenseService {
       // Get existing employee_expense records
       const existing = await tx.employeeExpense.findMany({
         where: { expenseId },
-        select: { employeeId: true },
+        select: { employeeId: true, employeeShare: true },
       });
       const existingIds = new Set(existing.map((e) => e.employeeId));
+      const existingShareMap = new Map(existing.map((e) => [e.employeeId, Number(e.employeeShare)]));
       const newIds = new Set(data.employeeIds);
 
       // Delete records for removed employees (BUG FIX from Kony)
@@ -94,12 +95,17 @@ export class ExpenseService {
         });
       }
 
-      // Update existing records
+      // Update existing records — only reset settlement status if share amount changed
       const toUpdate = [...existingIds].filter((id) => newIds.has(id));
       for (const employeeId of toUpdate) {
+        const oldShare = existingShareMap.get(employeeId) ?? 0;
+        const shareChanged = Math.abs(oldShare - individualShare) > 0.001;
         await tx.employeeExpense.update({
           where: { expenseId_employeeId: { expenseId, employeeId } },
-          data: { employeeShare: individualShare, status: false },
+          data: {
+            employeeShare: individualShare,
+            ...(shareChanged ? { status: false } : {}),
+          },
         });
       }
 
