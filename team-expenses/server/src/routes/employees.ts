@@ -49,7 +49,7 @@ router.post('/', async (req: Request, res: Response) => {
     const employee = await employeeService.createEmployee({
       id: id.trim(),
       name: name.trim(),
-      isAdmin: isAdmin === true || isAdmin === 0,
+      isAdmin: isAdmin === true,
     });
     res.status(201).json(employee);
   } catch (error: any) {
