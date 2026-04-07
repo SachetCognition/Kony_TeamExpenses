@@ -24,7 +24,7 @@ test('TC-E2E-011: update expense amount and employees', async ({ page }) => {
   await page.getByTestId('update-btn').click();
   await page.waitForURL(/.*dashboard/);
 
-  await expect(page.getByText('6000')).toBeVisible();
+  await expect(page.getByText('6000').first()).toBeVisible();
 });
 
 // TC-E2E-012: Verify removed employees no longer have shares

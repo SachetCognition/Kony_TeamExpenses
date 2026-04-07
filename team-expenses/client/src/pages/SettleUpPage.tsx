@@ -29,11 +29,7 @@ export default function SettleUpPage() {
     setError('');
     try {
       await settleUp.mutateAsync({ expenseId: selectedExpenseId, employeeId });
-      if (unsettled.length <= 1) {
-        navigate('/dashboard');
-      } else {
-        setSelectedExpenseId(null);
-      }
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to settle');
     }

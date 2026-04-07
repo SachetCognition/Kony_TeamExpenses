@@ -10,8 +10,8 @@ test.beforeEach(async ({ page }) => {
 test('TC-E2E-002: dashboard displays seeded expenses with categories and amounts', async ({ page }) => {
   await expect(page.getByText('Team Lunch')).toBeVisible();
   await expect(page.getByText('Cab to Airport')).toBeVisible();
-  await expect(page.getByText('Food')).toBeVisible();
-  await expect(page.getByText('Travel')).toBeVisible();
+  await expect(page.getByText('Food').first()).toBeVisible();
+  await expect(page.getByText('Travel').first()).toBeVisible();
 });
 
 // TC-E2E-003: Dashboard displays correct Amount Spent

@@ -9,6 +9,10 @@ async function main() {
   await prisma.category.deleteMany();
   await prisma.employee.deleteMany();
 
+  // Reset auto-increment sequences so IDs start from 1
+  await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Category_id_seq" RESTART WITH 1`);
+  await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Expense_id_seq" RESTART WITH 1`);
+
   // Employees
   const employees = await Promise.all([
     prisma.employee.create({ data: { id: 'EMP001', name: 'Haritha', isAdmin: true } }),
@@ -98,6 +102,18 @@ async function main() {
     prisma.employeeExpense.create({ data: { expenseId: expense5.id, employeeId: 'EMP003', employeeShare: new Prisma.Decimal(400), status: false } }),
     prisma.employeeExpense.create({ data: { expenseId: expense5.id, employeeId: 'EMP005', employeeShare: new Prisma.Decimal(400), status: false } }),
   ]);
+
+  // Reset auto-increment sequences to avoid unique constraint violations
+  // when creating new records via the API after seeding with explicit IDs
+  await prisma.$executeRawUnsafe(
+    `SELECT setval(pg_get_serial_sequence('"Category"', 'id'), (SELECT MAX(id) FROM "Category"))`
+  );
+  await prisma.$executeRawUnsafe(
+    `SELECT setval(pg_get_serial_sequence('"Expense"', 'id'), (SELECT MAX(id) FROM "Expense"))`
+  );
+  // Verify: expenses should have IDs 1-5, categories 1-4
+  const expenseIds = await prisma.expense.findMany({ select: { id: true }, orderBy: { id: 'asc' } });
+  console.log(`  Expense IDs: ${expenseIds.map(e => e.id).join(', ')}`);
 
   console.log('Seed data created successfully!');
   console.log(`  Employees: ${employees.length}`);
