@@ -1,0 +1,27 @@
+{
+  "name": "team-expenses",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "db:generate": "cd prisma && npx prisma generate",
+    "db:migrate": "cd prisma && npx prisma migrate deploy",
+    "db:seed": "cd prisma && npx ts-node seed.ts",
+    "db:reset": "cd prisma && npx prisma migrate reset --force",
+    "test:unit": "cd server && npm run test:unit",
+    "test:integration": "cd server && npm run test:integration",
+    "test:frontend": "cd client && npm run test",
+    "test:e2e": "cd e2e && npx playwright test",
+    "test": "npm run test:unit && npm run test:frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prisma": "^5.14.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0"
+  }
+}
