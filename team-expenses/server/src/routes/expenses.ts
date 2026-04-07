@@ -16,7 +16,12 @@ router.get('/', async (_req: Request, res: Response) => {
       categoryId: e.categoryId,
       categoryName: e.category.name,
       date: e.date.toISOString().substring(0, 10),
-      employees: e.employees,
+      employees: e.employees.map((ee) => ({
+        employeeId: ee.employeeId,
+        employeeShare: Number(ee.employeeShare),
+        status: ee.status,
+        comment: ee.comment,
+      })),
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     }));
@@ -95,6 +100,9 @@ router.put('/:id', async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.message.includes('required') || error.message.includes('must be') || error.message.includes('At least')) {
       return res.status(400).json({ error: error.message });
+    }
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Expense not found' });
     }
     res.status(500).json({ error: 'Failed to update expense' });
   }
