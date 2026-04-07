@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Expense Tracker &mdash; User Requirements Specification</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-light: #e1effe;
+    --border: #d1d5db;
+    --bg: #ffffff;
+    --bg-alt: #f9fafb;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  h1 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; border-bottom: 3px solid var(--primary); padding-bottom: 0.5rem; }
+  h2 { font-size: 1.5rem; color: var(--primary); margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.4rem; }
+  h3 { font-size: 1.2rem; color: #1e40af; margin-top: 1.8rem; margin-bottom: 0.6rem; }
+  h4 { font-size: 1.05rem; color: #374151; margin-top: 1.2rem; margin-bottom: 0.4rem; }
+  p { margin-bottom: 0.8rem; }
+  ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.3rem; }
+  code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+  pre {
+    background: #1f2937;
+    color: #e5e7eb;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.92rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.55rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--primary); color: #fff; font-weight: 600; }
+  tr:nth-child(even) { background: var(--bg-alt); }
+  .doc-header {
+    background: linear-gradient(135deg, #1e3a8a, #1a56db);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+  .doc-header h1 { color: #fff; border-bottom-color: rgba(255,255,255,0.3); }
+  .doc-header .meta { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; font-size: 0.95rem; }
+  .doc-header .meta span { opacity: 0.9; }
+  .doc-header .meta strong { opacity: 1; }
+  .toc {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .toc h2 { margin-top: 0; border-bottom: none; font-size: 1.2rem; }
+  .toc ol { counter-reset: toc; list-style: none; margin-left: 0; }
+  .toc > ol > li { counter-increment: toc; margin-bottom: 0.3rem; }
+  .toc a { color: var(--primary); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol ol { margin-left: 1.5rem; margin-top: 0.2rem; margin-bottom: 0.4rem; }
+  .fr-box {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 6px 6px 0;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .fr-box h4 { margin-top: 0; color: var(--primary); }
+  .fr-box .fr-id { font-weight: 700; color: var(--primary); }
+  .label { display: inline-block; font-weight: 600; min-width: 130px; color: #374151; }
+  .source-ref { font-family: monospace; font-size: 0.85em; color: var(--text-muted); background: #f3f4f6; padding: 2px 6px; border-radius: 3px; }
+  .er-diagram {
+    background: #1f2937;
+    color: #a5f3fc;
+    padding: 1.2rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    white-space: pre;
+    margin-bottom: 1.5rem;
+  }
+  .screen-box {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+    background: #fff;
+  }
+  .screen-box h4 { margin-top: 0; }
+  .nav-arrow { color: var(--primary); font-weight: bold; }
+  .bug-note {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-left: 4px solid var(--danger);
+    padding: 0.8rem 1rem;
+    border-radius: 0 6px 6px 0;
+    margin: 0.8rem 0;
+    font-size: 0.92rem;
+  }
+  .bug-note strong { color: var(--danger); }
+  @media print {
+    body { max-width: 100%; padding: 1rem; }
+    .doc-header { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { page-break-after: avoid; }
+    .fr-box, .screen-box { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- 1.1  DOCUMENT HEADER                                         -->
+<!-- ============================================================ -->
+<div class="doc-header">
+  <h1>Team Expense Tracker &mdash; User Requirements Specification</h1>
+  <div class="meta">
+    <span><strong>Version:</strong> 1.0</span>
+    <span><strong>Date:</strong> 2026-04-07</span>
+    <span><strong>Source:</strong> Reverse-engineered from SachetCognition/Kony_TeamExpenses</span>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">1. Document Header</a></li>
+    <li><a href="#s2">2. Purpose &amp; Scope</a></li>
+    <li><a href="#s3">3. Data Model Requirements</a>
+      <ol>
+        <li><a href="#s3-1">3.1 Employee</a></li>
+        <li><a href="#s3-2">3.2 Category</a></li>
+        <li><a href="#s3-3">3.3 Expense</a></li>
+        <li><a href="#s3-4">3.4 EmployeeExpense</a></li>
+        <li><a href="#s3-5">3.5 Relationships</a></li>
+        <li><a href="#s3-6">3.6 ER Diagram</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">4. Functional Requirements</a>
+      <ol>
+        <li><a href="#fr001">FR-001: Add Expense with Equal Split</a></li>
+        <li><a href="#fr002">FR-002: Settle Up</a></li>
+        <li><a href="#fr003">FR-003: Update Expense with Re-split</a></li>
+        <li><a href="#fr004">FR-004: Delete Expense (Cascade)</a></li>
+        <li><a href="#fr005">FR-005: Dashboard &mdash; Expense List with Category</a></li>
+        <li><a href="#fr006">FR-006: Dashboard &mdash; Total Amount Spent</a></li>
+        <li><a href="#fr007">FR-007: Dashboard &mdash; Employee Shares (Who Owes What)</a></li>
+        <li><a href="#fr008">FR-008: Per-Category Expense Totals</a></li>
+        <li><a href="#fr009">FR-009: Populate Settle-Up Form</a></li>
+        <li><a href="#fr010">FR-010: Expense Selection Changed (Settle-Up)</a></li>
+        <li><a href="#fr011">FR-011: Search Employees by Name</a></li>
+        <li><a href="#fr012">FR-012: Select All / Clear All Employees</a></li>
+        <li><a href="#fr013">FR-013: Reset Add Expense Form</a></li>
+        <li><a href="#fr014">FR-014: Populate Update Expense Form</a></li>
+        <li><a href="#fr015">FR-015: Category CRUD</a></li>
+        <li><a href="#fr016">FR-016: Employee CRUD</a></li>
+        <li><a href="#fr017">FR-017: App Initialization</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">5. Screen Requirements</a>
+      <ol>
+        <li><a href="#s5-1">5.1 Login Screen (frmLoginKA)</a></li>
+        <li><a href="#s5-2">5.2 Dashboard (frmDashboardKA)</a></li>
+        <li><a href="#s5-3">5.3 Add Expense (frmAddExpenseKA)</a></li>
+        <li><a href="#s5-4">5.4 Update Expense (frmUpdateExpenseKA)</a></li>
+        <li><a href="#s5-5">5.5 Add Category (frmAddCategoryKA)</a></li>
+        <li><a href="#s5-6">5.6 Add Employee (frmAddEmployeeKA)</a></li>
+        <li><a href="#s5-7">5.7 Settle Up (frmSettleupKA)</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">6. Navigation Flow</a></li>
+    <li><a href="#s7">7. Non-Functional Requirements</a></li>
+    <li><a href="#s8">8. Traceability Matrix</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<!-- 1.2  PURPOSE & SCOPE                                         -->
+<!-- ============================================================ -->
+<h2 id="s1">1. Document Header</h2>
+<table>
+  <tr><th style="width:200px">Field</th><th>Value</th></tr>
+  <tr><td>Title</td><td>Team Expense Tracker &mdash; User Requirements Specification</td></tr>
+  <tr><td>Version</td><td>1.0</td></tr>
+  <tr><td>Date</td><td>2026-04-07</td></tr>
+  <tr><td>Source</td><td>Reverse-engineered from <code>SachetCognition/Kony_TeamExpenses</code> (branch: master)</td></tr>
+  <tr><td>Author</td><td>Auto-generated via source code analysis</td></tr>
+</table>
+
+<h2 id="s2">2. Purpose &amp; Scope</h2>
+<p>
+  The <strong>Team Expense Tracker</strong> is a web application that enables a team administrator to:
+</p>
+<ul>
+  <li>Log shared team expenses (meals, travel, supplies, entertainment, etc.).</li>
+  <li>Split each expense <strong>equally</strong> among a selected subset of team members.</li>
+  <li>Track which team members owe money and how much.</li>
+  <li>Settle individual debts one expense at a time.</li>
+  <li>Manage categories and employee records.</li>
+</ul>
+<p>
+  <strong>Currency:</strong> Indian Rupee (<strong>&#8377;</strong>). All monetary values are displayed with the &#8377; prefix.
+</p>
+<p>
+  This specification was reverse-engineered from the Kony Visualizer project located at
+  <code>SachetCognition/Kony_TeamExpenses</code>. Every requirement references the exact source file and line numbers
+  from the original codebase to ensure traceability.
+</p>
+
+<!-- ============================================================ -->
+<!-- 1.3  DATA MODEL REQUIREMENTS                                 -->
+<!-- ============================================================ -->
+<h2 id="s3">3. Data Model Requirements</h2>
+<p>The application uses four core entities. Field definitions are extracted from the Kony <code>MF_Config.js</code> files; relationships from the <code>Model.js</code> files.</p>
+
+<h3 id="s3-1">3.1 Employee</h3>
+<p><span class="source-ref">Source: models/ExpenseTrackerOS/employee/MF_Config.js lines 14&ndash;28</span></p>
+<table>
+  <tr><th>Field</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>Primary Key</td><td>User-provided employee identifier (e.g. &ldquo;EMP001&rdquo;)</td></tr>
+  <tr><td><code>name</code></td><td>string</td><td>Required</td><td>Employee display name</td></tr>
+  <tr><td><code>isAdmin</code></td><td>boolean</td><td>Default: false</td><td>Whether employee is a team admin</td></tr>
+  <tr><td><code>CreatedBy</code></td><td>string</td><td>Audit</td><td>Creator identifier</td></tr>
+  <tr><td><code>CreatedDateTime</code></td><td>date</td><td>Audit</td><td>Record creation timestamp</td></tr>
+  <tr><td><code>LastUpdatedBy</code></td><td>string</td><td>Audit</td><td>Last modifier identifier</td></tr>
+  <tr><td><code>LastUpdatedDateTime</code></td><td>date</td><td>Audit</td><td>Last modification timestamp</td></tr>
+  <tr><td><code>SoftDeleteFlag</code></td><td>boolean</td><td>Audit</td><td>Soft-delete marker</td></tr>
+</table>
+
+<h3 id="s3-2">3.2 Category</h3>
+<p><span class="source-ref">Source: models/ExpenseTrackerOS/category/MF_Config.js lines 14&ndash;28</span></p>
+<table>
+  <tr><th>Field</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+  <tr><td><code>id</code></td><td>number</td><td>Primary Key, Auto-increment</td><td>Category identifier</td></tr>
+  <tr><td><code>name</code></td><td>string</td><td>Required</td><td>Category name (e.g. &ldquo;Food&rdquo;, &ldquo;Travel&rdquo;)</td></tr>
+  <tr><td><code>description</code></td><td>string</td><td>Optional</td><td>Category description</td></tr>
+  <tr><td><code>CreatedBy</code></td><td>string</td><td>Audit</td><td>Creator identifier</td></tr>
+  <tr><td><code>CreatedDateTime</code></td><td>date</td><td>Audit</td><td>Record creation timestamp</td></tr>
+  <tr><td><code>LastUpdatedBy</code></td><td>string</td><td>Audit</td><td>Last modifier identifier</td></tr>
+  <tr><td><code>LastUpdatedDateTime</code></td><td>date</td><td>Audit</td><td>Last modification timestamp</td></tr>
+  <tr><td><code>SoftDeleteFlag</code></td><td>boolean</td><td>Audit</td><td>Soft-delete marker</td></tr>
+</table>
+
+<h3 id="s3-3">3.3 Expense</h3>
+<p><span class="source-ref">Source: models/ExpenseTrackerOS/expense/MF_Config.js lines 15&ndash;30</span></p>
+<table>
+  <tr><th>Field</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+  <tr><td><code>id</code></td><td>number</td><td>Primary Key, Auto-increment</td><td>Expense identifier</td></tr>
+  <tr><td><code>name</code></td><td>string</td><td>Required</td><td>Expense name / description</td></tr>
+  <tr><td><code>expenditure</code></td><td>number</td><td>Required, &gt; 0</td><td>Total amount of the expense</td></tr>
+  <tr><td><code>categoryID</code></td><td>number</td><td>Foreign Key &rarr; Category.id</td><td>Associated expense category</td></tr>
+  <tr><td><code>CreatedBy</code></td><td>string</td><td>Audit</td><td>Creator identifier</td></tr>
+  <tr><td><code>CreatedDateTime</code></td><td>date</td><td>Audit</td><td>Record creation timestamp (used as expense date)</td></tr>
+  <tr><td><code>LastUpdatedBy</code></td><td>string</td><td>Audit</td><td>Last modifier identifier</td></tr>
+  <tr><td><code>LastUpdatedDateTime</code></td><td>date</td><td>Audit</td><td>Last modification timestamp</td></tr>
+  <tr><td><code>SoftDeleteFlag</code></td><td>boolean</td><td>Audit</td><td>Soft-delete marker</td></tr>
+</table>
+
+<h3 id="s3-4">3.4 EmployeeExpense (Junction / Split Table)</h3>
+<p><span class="source-ref">Source: models/ExpenseTrackerOS/employee_expense/MF_Config.js lines 16&ndash;33</span></p>
+<table>
+  <tr><th>Field</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+  <tr><td><code>expenseID</code></td><td>number</td><td>Composite PK, FK &rarr; Expense.id</td><td>Reference to the expense</td></tr>
+  <tr><td><code>employeeID</code></td><td>string</td><td>Composite PK, FK &rarr; Employee.id</td><td>Reference to the employee</td></tr>
+  <tr><td><code>employeeShare</code></td><td>number</td><td>Required</td><td>Individual share amount (expenditure / N)</td></tr>
+  <tr><td><code>comment</code></td><td>string</td><td>Optional</td><td>Comment or note for this split</td></tr>
+  <tr><td><code>status</code></td><td>boolean</td><td>Default: false</td><td>Settlement status (false = unpaid, true = settled)</td></tr>
+  <tr><td><code>CreatedBy</code></td><td>string</td><td>Audit</td><td>Creator identifier</td></tr>
+  <tr><td><code>CreatedDateTime</code></td><td>date</td><td>Audit</td><td>Record creation timestamp</td></tr>
+  <tr><td><code>LastUpdatedBy</code></td><td>string</td><td>Audit</td><td>Last modifier identifier</td></tr>
+  <tr><td><code>LastUpdatedDateTime</code></td><td>date</td><td>Audit</td><td>Last modification timestamp</td></tr>
+  <tr><td><code>SoftDeleteFlag</code></td><td>boolean</td><td>Audit</td><td>Soft-delete marker</td></tr>
+</table>
+
+<h3 id="s3-5">3.5 Relationships</h3>
+<p><span class="source-ref">Source: models/ExpenseTrackerOS/employee/Model.js lines 209&ndash;222</span></p>
+<p><span class="source-ref">Source: models/ExpenseTrackerOS/expense/Model.js lines 228&ndash;241</span></p>
+<table>
+  <tr><th>Relationship</th><th>Type</th><th>Source Field</th><th>Target Entity</th><th>Target Field</th></tr>
+  <tr>
+    <td>employee &rarr; employee_expense</td>
+    <td>OneToMany</td>
+    <td><code>employee.id</code></td>
+    <td>employee_expense</td>
+    <td><code>employeeID</code></td>
+  </tr>
+  <tr>
+    <td>expense &rarr; employee_expense</td>
+    <td>OneToMany</td>
+    <td><code>expense.id</code></td>
+    <td>employee_expense</td>
+    <td><code>expenseID</code></td>
+  </tr>
+  <tr>
+    <td>category &rarr; expense</td>
+    <td>OneToMany (implicit)</td>
+    <td><code>category.id</code></td>
+    <td>expense</td>
+    <td><code>categoryID</code></td>
+  </tr>
+</table>
+
+<h3 id="s3-6">3.6 ER Diagram</h3>
+<div class="er-diagram">
+ +------------------+          +---------------------+          +------------------+
+ |    Employee      |          |  EmployeeExpense    |          |     Expense      |
+ |------------------|          |---------------------|          |------------------|
+ | * id       : str | PK       | * expenseID  : num  | PK,FK   | * id       : num | PK
+ |   name     : str |          | * employeeID : str  | PK,FK   |   name     : str |
+ |   isAdmin  : bool|          |   employeeShare:num |          |   expenditure:num|
+ |   createdAt: date|          |   comment    : str  |          |   categoryID:num | FK
+ |   updatedAt: date|          |   status     : bool |          |   createdAt: date|
+ +------------------+          |   createdAt  : date |          |   updatedAt: date|
+         |                     |   updatedAt  : date |          +------------------+
+         |  1                  +---------------------+                  |  1
+         |                          |           |                      |
+         +--- 1:N (employeeID) -----+           +---- N:1 (expenseID)-+
+                                                        
+                                                        
+ +------------------+                                   
+ |    Category      |                                   
+ |------------------|          category.id = expense.categoryID
+ | * id       : num | PK              |
+ |   name     : str |                 |  1:N
+ |   description:str|                 |
+ |   createdAt: date| -----1:N-------+
+ |   updatedAt: date|
+ +------------------+
+</div>
+
+<!-- ============================================================ -->
+<!-- 1.4  FUNCTIONAL REQUIREMENTS                                 -->
+<!-- ============================================================ -->
+<h2 id="s4">4. Functional Requirements</h2>
+
+<!-- FR-001 -->
+<div class="fr-box" id="fr001">
+  <h4><span class="fr-id">FR-001</span> &mdash; Add Expense with Equal Split</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 1&ndash;63</span></p>
+  
+  <p><span class="label">Description:</span> Create a new team expense and split it equally among selected employees.</p>
+  
+  <p><span class="label">Input:</span></p>
+  <ul>
+    <li><code>expenseName</code> (string, required) &mdash; from <code>frmAddExpenseKA.tbxExpenseName.text</code></li>
+    <li><code>expenditure</code> (number, required, &gt; 0) &mdash; parsed via <code>parseFloat(frmAddExpenseKA.tbxAmount.text)</code>; defaults to 0 if NaN</li>
+    <li><code>categoryID</code> (number) &mdash; from dropdown <code>frmAddExpenseKA.lbxSelectCategory.selectedKey</code>, parsed with <code>parseInt()</code></li>
+    <li><code>listOfEmployees</code> (string[]) &mdash; from multi-select <code>frmAddExpenseKA.cbxEmpList.selectedKeys</code></li>
+    <li><code>comment</code> (string, optional) &mdash; from <code>frmAddExpenseKA.tbxDescriptionNew.text</code></li>
+    <li><code>date</code> (date) &mdash; from date picker <code>frmAddExpenseKA.calDateOfPurchanse.dateComponents</code>, formatted to ISO 8601</li>
+  </ul>
+  
+  <p><span class="label">Validation:</span></p>
+  <ul>
+    <li>If <code>expenditure === 0</code> OR <code>expenseName === ''</code>, show alert: &ldquo;Please enter the mandatory feilds: expense name and amount&rdquo; (line 9&ndash;11)</li>
+  </ul>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Create one <strong>Expense</strong> record with: name, expenditure, categoryID, CreatedDateTime (line 16&ndash;20)</li>
+    <li>On successful expense creation, calculate: <code>individualShare = expenditure / numberOfEmployees</code> (line 26)</li>
+    <li>For each selected employee, create an <strong>EmployeeExpense</strong> record with: employeeID, expenseID (from created expense), employeeShare = individualShare, comment, status = false (lines 48&ndash;54)</li>
+    <li>On any employee_expense creation failure, set <code>count = -1</code> and abort remaining creates (lines 40&ndash;46)</li>
+    <li>On success of all creates, navigate to Dashboard and refresh data (lines 31&ndash;37)</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> New expense record + N employee_expense records. Dashboard refreshed.</p>
+</div>
+
+<!-- FR-002 -->
+<div class="fr-box" id="fr002">
+  <h4><span class="fr-id">FR-002</span> &mdash; Settle Up</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 66&ndash;87</span></p>
+  
+  <p><span class="label">Description:</span> Mark a single employee&rsquo;s share of a specific expense as settled (paid).</p>
+  
+  <p><span class="label">Input:</span></p>
+  <ul>
+    <li><code>employeeID</code> (string) &mdash; from <code>frmSettleupKA.lblID.text</code></li>
+    <li><code>expenseID</code> (number) &mdash; from <code>frmSettleupKA.lbxSelectExpense.selectedKey</code>, parsed with <code>parseInt()</code></li>
+  </ul>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Build composite primary key: <code>{"employeeID": employeeID, "expenseID": expenseID}</code> (line 74)</li>
+    <li>Update <code>employee_expense.status = true</code> using the composite key (lines 70&ndash;77)</li>
+    <li>Regardless of success or failure, call <code>populateDataInDashboardForm()</code> to refresh the dashboard (lines 81, 85)</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Employee expense record status set to <code>true</code>. Dashboard refreshed.</p>
+</div>
+
+<!-- FR-003 -->
+<div class="fr-box" id="fr003">
+  <h4><span class="fr-id">FR-003</span> &mdash; Update Expense with Re-split</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 450&ndash;595</span></p>
+  
+  <p><span class="label">Description:</span> Update an existing expense&rsquo;s amount and re-split among a potentially changed set of employees.</p>
+  
+  <p><span class="label">Input:</span></p>
+  <ul>
+    <li><code>expenseName</code> (string) &mdash; from <code>frmUpdateExpenseKA.tbxExpenseName.text</code></li>
+    <li><code>expenditure</code> (number) &mdash; parsed via <code>parseInt()</code> after stripping &ldquo;&#8377;&rdquo; prefix (line 452)</li>
+    <li><code>categoryID</code> (number) &mdash; from dropdown selected key</li>
+    <li><code>listOfEmployees</code> (string[]) &mdash; from multi-select checkbox keys</li>
+    <li><code>comment</code> (string, optional)</li>
+    <li><code>date</code> (date) &mdash; from date picker</li>
+  </ul>
+  
+  <p><span class="label">Validation:</span></p>
+  <ul>
+    <li>Same as FR-001: reject if <code>expenditure === 0</code> or <code>expenseName === ''</code> (line 458)</li>
+  </ul>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Look up expense by <code>name + categoryID</code> to retrieve <code>expenseId</code> (lines 467&ndash;472, 583&ndash;593)</li>
+    <li>Recalculate: <code>individualShare = amount / listOfEmployees.length</code> (line 480)</li>
+    <li>Fetch existing employee_expense records for this expense (lines 484&ndash;490)</li>
+    <li>For each employee in the new list:
+      <ul>
+        <li>If an existing record exists &rarr; <strong>update</strong> the employeeShare (lines 507&ndash;514)</li>
+        <li>If new (not in existing records) &rarr; <strong>create</strong> a new employee_expense record with status=false (lines 516&ndash;526)</li>
+      </ul>
+    </li>
+    <li>After all employee_expense updates complete, update <code>expense.expenditure</code> (lines 529&ndash;537)</li>
+  </ol>
+  
+  <div class="bug-note">
+    <strong>BUG in Original Code:</strong> The original Kony code does <strong>NOT</strong> delete employee_expense records for employees who were removed from the split. It only updates existing records and creates new ones. The new application <strong>MUST</strong> fix this by deleting employee_expense records for employees no longer in the updated split list.
+  </div>
+  
+  <p><span class="label">Output:</span> Updated expense record + re-calculated employee_expense records. Removed employees&rsquo; records deleted.</p>
+</div>
+
+<!-- FR-004 -->
+<div class="fr-box" id="fr004">
+  <h4><span class="fr-id">FR-004</span> &mdash; Delete Expense (Cascade)</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 379&ndash;446</span></p>
+  
+  <p><span class="label">Description:</span> Delete an expense and all associated employee_expense records.</p>
+  
+  <p><span class="label">Input:</span></p>
+  <ul>
+    <li><code>expenseName</code>, <code>expenditure</code>, <code>categoryID</code>, <code>listOfEmployees</code> &mdash; all from the Update Expense form</li>
+  </ul>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Look up expense by <code>name + expenditure + categoryID</code> to retrieve <code>expenseID</code> (lines 393&ndash;400, 434&ndash;444)</li>
+    <li>Delete all employee_expense records for that expense first, iterating through each employee (lines 402&ndash;410)</li>
+    <li>Once all employee_expense deletions succeed (tracked via counter), delete the expense record itself (lines 413&ndash;418)</li>
+    <li><strong>New app simplification:</strong> Use <code>ON DELETE CASCADE</code> on the foreign key so deleting the expense automatically removes all employee_expense records.</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Expense and all associated employee_expense records deleted. Dashboard navigated to.</p>
+</div>
+
+<!-- FR-005 -->
+<div class="fr-box" id="fr005">
+  <h4><span class="fr-id">FR-005</span> &mdash; Dashboard &mdash; Expense List with Category</h4>
+  <p><span class="source-ref">Source: modules/Expense.js lines 73&ndash;129 (getCategoryExpenseObject)</span></p>
+  <p><span class="source-ref">Source: modules/Module.js lines 94&ndash;128 (populateSegExpenses, widget mapping lines 95&ndash;102)</span></p>
+  
+  <p><span class="label">Description:</span> Display all expenses on the dashboard with their associated category names.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Fetch all expense records and all category records (line 128)</li>
+    <li>Client-side JOIN: for each expense, match <code>expense.categoryID === category.id</code> (line 88)</li>
+    <li>Build output array with fields per row:
+      <ul>
+        <li><code>expenseID</code> &mdash; expense primary key</li>
+        <li><code>expenseName</code> &mdash; expense name</li>
+        <li><code>categoryName</code> &mdash; matched category name</li>
+        <li><code>categoryID</code> &mdash; category primary key</li>
+        <li><code>expenditure</code> &mdash; formatted as <code>"&#8377;" + expense.expenditure</code> (line 96)</li>
+        <li><code>date</code> &mdash; ISO 8601 substring (0&ndash;10), i.e. YYYY-MM-DD (line 99)</li>
+        <li><code>image</code> &mdash; &ldquo;wallet.png&rdquo; (line 91)</li>
+      </ul>
+    </li>
+  </ol>
+  
+  <p><span class="label">Widget Mapping (Dashboard segment):</span></p>
+  <table>
+    <tr><th>Widget</th><th>Data Field</th></tr>
+    <tr><td>lblDate</td><td>date</td></tr>
+    <tr><td>lblToValue</td><td>expenseName</td></tr>
+    <tr><td>lblCategoryName</td><td>categoryName</td></tr>
+    <tr><td>lblAmount</td><td>expenditure</td></tr>
+    <tr><td>imgCategory</td><td>image (wallet.png)</td></tr>
+    <tr><td>lblID</td><td>categoryID</td></tr>
+  </table>
+  
+  <p><span class="label">Output:</span> Populated expense list segment on dashboard.</p>
+</div>
+
+<!-- FR-006 -->
+<div class="fr-box" id="fr006">
+  <h4><span class="fr-id">FR-006</span> &mdash; Dashboard &mdash; Total Amount Spent</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 104&ndash;114 (calculateAndPopulateTotalMoneyOwed)</span></p>
+  
+  <p><span class="label">Description:</span> Calculate and display the total of all expenses.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Iterate over all expense records (from the joined category-expense objects)</li>
+    <li>For each record, strip the &ldquo;&#8377;&rdquo; prefix from the expenditure string: <code>expenditure.substring(1, expenditure.length)</code> (line 108)</li>
+    <li>Parse as float and sum: <code>totalMoneyOwed += parseFloat(expenditure)</code> (line 109)</li>
+    <li>Handle null/undefined values gracefully (line 108: <code>kony.sdk.isNullOrUndefined</code> check)</li>
+    <li>Display result as: <code>"Amount Spent: &#8377;" + totalMoneyOwed</code> in <code>frmDashboardKA.lblDetails</code> (line 112)</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Label showing &ldquo;Amount Spent: &#8377;X&rdquo; on the dashboard.</p>
+</div>
+
+<!-- FR-007 -->
+<div class="fr-box" id="fr007">
+  <h4><span class="fr-id">FR-007</span> &mdash; Dashboard &mdash; Employee Shares (Who Owes What)</h4>
+  <p><span class="source-ref">Source: modules/EmployeeExpense.js lines 129&ndash;171 (getSumOfEmployeeShare)</span></p>
+  <p><span class="source-ref">Source: modules/EmployeeExpense.js lines 70&ndash;124 (getEmployeeExpenseObject)</span></p>
+  <p><span class="source-ref">Source: modules/EmployeeExpense.js lines 97&ndash;107 (status filter)</span></p>
+  
+  <p><span class="label">Description:</span> Display a list of employees who owe money, with their total unpaid share amounts.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Fetch all employee_expense records</li>
+    <li><strong>Filter:</strong> Only include records where <code>status !== true</code> (unpaid) &mdash; lines 102&ndash;106</li>
+    <li>Join with employee records to get employee names via <code>getEmployeeExpenseObject</code> (lines 70&ndash;124)</li>
+    <li><strong>Group by</strong> <code>employeeID</code> and <strong>sum</strong> <code>employeeShare</code> for each employee (lines 135&ndash;143)</li>
+    <li>Calculate total <code>amountOwed</code> across all employees using <code>parseInt()</code> (line 151)</li>
+    <li>Display &ldquo;Gets back: &#8377;X&rdquo; in <code>frmDashboardKA.lblMoneyOwed</code> (line 162)</li>
+    <li>Each row in the employee segment: <code>{name, "&#8377;" + share, "Settle Up" button, employeeID}</code> (lines 152&ndash;155)</li>
+  </ol>
+  
+  <p><span class="label">Widget Mapping (Employee segment):</span></p>
+  <table>
+    <tr><th>Widget</th><th>Data Field</th></tr>
+    <tr><td>lblCategory</td><td>name</td></tr>
+    <tr><td>lblCategoryDesc</td><td>employeeShare (prefixed with &#8377;)</td></tr>
+    <tr><td>btnPay</td><td>&ldquo;Settle Up&rdquo; button text</td></tr>
+    <tr><td>lblID</td><td>employeeID</td></tr>
+  </table>
+  
+  <p><span class="label">Output:</span> Employee shares list + &ldquo;Gets back: &#8377;X&rdquo; summary label.</p>
+</div>
+
+<!-- FR-008 -->
+<div class="fr-box" id="fr008">
+  <h4><span class="fr-id">FR-008</span> &mdash; Per-Category Expense Totals</h4>
+  <p><span class="source-ref">Source: modules/Expense.js lines 134&ndash;183 (getTotalExpenseForEachCategory)</span></p>
+  
+  <p><span class="label">Description:</span> Calculate total expenditure grouped by category.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Fetch all category records, then all expense records (lines 174&ndash;183)</li>
+    <li>For each category, iterate over all expenses and sum <code>expenditure</code> where <code>categoryRecord.id === expenseRecord.categoryID</code> (lines 147&ndash;155)</li>
+    <li>Build output array: <code>[{categoryName, totalExpense}]</code> for each category (lines 157&ndash;159)</li>
+    <li>Categories with no matching expenses will have <code>totalExpense = 0</code></li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Array of category names with their total expense amounts.</p>
+</div>
+
+<!-- FR-009 -->
+<div class="fr-box" id="fr009">
+  <h4><span class="fr-id">FR-009</span> &mdash; Populate Settle-Up Form</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 259&ndash;307</span></p>
+  
+  <p><span class="label">Description:</span> When clicking &ldquo;Settle Up&rdquo; on an employee row, populate the settle-up form with that employee&rsquo;s unsettled expenses.</p>
+  
+  <p><span class="label">Input:</span></p>
+  <ul>
+    <li>Selected row data from the employee segment: <code>name</code>, <code>employeeID</code>, <code>employeeShare</code></li>
+  </ul>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Set employee name field as readonly: <code>tbxEmployee.setEnabled(false)</code> (line 268)</li>
+    <li>Set total share field as readonly with amount (strip &#8377; prefix): <code>tbxTotalShare.setEnabled(false)</code> (lines 270&ndash;271)</li>
+    <li>Store employeeID in hidden label <code>lblID</code> (line 272)</li>
+    <li>Fetch all employee_expense records for this employee (lines 303&ndash;306)</li>
+    <li>Filter to only <code>status === false</code> (unpaid) records (line 279)</li>
+    <li>For each unpaid record, look up the expense name and populate the dropdown (lines 284&ndash;292)</li>
+    <li>Store each expense&rsquo;s individual share in <code>shareOfEachExpense</code> array (line 282)</li>
+    <li>Default amount shown is the first expense&rsquo;s share (line 289)</li>
+    <li>Amount field is readonly (line 288)</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Settle-Up form populated with employee info and dropdown of unsettled expenses.</p>
+</div>
+
+<!-- FR-010 -->
+<div class="fr-box" id="fr010">
+  <h4><span class="fr-id">FR-010</span> &mdash; Expense Selection Changed (Settle-Up)</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 309&ndash;320 (OnExpenseSelectionChanged)</span></p>
+  
+  <p><span class="label">Description:</span> When the expense dropdown selection changes on the Settle-Up form, update the displayed amount.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Get the selected expense key from <code>lbxSelectExpense.selectedKey</code> (line 312)</li>
+    <li>Search <code>shareOfEachExpense</code> array for a matching expense ID (line 314)</li>
+    <li>Update <code>tbxAmount.text</code> to show that expense&rsquo;s individual share (line 315)</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Amount field updated to reflect the selected expense&rsquo;s share.</p>
+</div>
+
+<!-- FR-011 -->
+<div class="fr-box" id="fr011">
+  <h4><span class="fr-id">FR-011</span> &mdash; Search Employees by Name</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 357&ndash;375</span></p>
+  
+  <p><span class="label">Description:</span> Filter the employee shares list on the dashboard by employee name.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Get search text from <code>frmDashboardKA.txtSearchEmployee.text</code>, convert to lowercase (line 359)</li>
+    <li>Iterate through employee segment data</li>
+    <li>Match using case-insensitive substring: <code>name.toLowerCase().indexOf(employee) &gt;= 0</code> (line 364)</li>
+    <li>Replace segment data with filtered results (line 369)</li>
+  </ol>
+  
+  <p><span class="label">Clear Search:</span> Reset search text to empty and restore full employee list from cached <code>employeeExpenses</code> variable (lines 372&ndash;375).</p>
+  
+  <p><span class="label">Output:</span> Filtered employee list on dashboard.</p>
+</div>
+
+<!-- FR-012 -->
+<div class="fr-box" id="fr012">
+  <h4><span class="fr-id">FR-012</span> &mdash; Select All / Clear All Employees</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 331&ndash;355</span></p>
+  
+  <p><span class="label">Description:</span> Toggle radio button images for select-all / clear-all on the employee multi-select in the Add Expense form.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li><strong>Select All</strong> (lines 331&ndash;342):
+      <ul>
+        <li>If already active (<code>imgSelectAll.src === "icon_radiobtn_active.png"</code>) &rarr; deactivate both</li>
+        <li>Otherwise &rarr; activate Select All, deactivate Clear All</li>
+      </ul>
+    </li>
+    <li><strong>Clear All</strong> (lines 344&ndash;355):
+      <ul>
+        <li>If already active (<code>imgClearAll.src === "icon_radiobtn_active.png"</code>) &rarr; deactivate both</li>
+        <li>Otherwise &rarr; activate Clear All, deactivate Select All</li>
+      </ul>
+    </li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Visual toggle of radio button images for employee selection controls.</p>
+</div>
+
+<!-- FR-013 -->
+<div class="fr-box" id="fr013">
+  <h4><span class="fr-id">FR-013</span> &mdash; Reset Add Expense Form</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 322&ndash;326</span></p>
+  
+  <p><span class="label">Description:</span> Clear all input fields on the Add Expense form.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Set <code>tbxExpenseName.text = ''</code> (line 323)</li>
+    <li>Set <code>tbxAmount.text = ''</code> (line 324)</li>
+    <li>Set <code>tbxDescriptionNew.text = ''</code> (line 325)</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Cleared expense name, amount, and description fields.</p>
+</div>
+
+<!-- FR-014 -->
+<div class="fr-box" id="fr014">
+  <h4><span class="fr-id">FR-014</span> &mdash; Populate Update Expense Form</h4>
+  <p><span class="source-ref">Source: modules/Module.js lines 217&ndash;254</span></p>
+  
+  <p><span class="label">Description:</span> When clicking an expense row on the dashboard, fetch and pre-populate the Update Expense form.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>Get selected row data: expenseID, categoryID, expenditure, expenseName, date (lines 218&ndash;223)</li>
+    <li>Fetch all employee_expense records where <code>expenseID</code> matches (lines 250&ndash;253)</li>
+    <li>Extract employeeIDs from the records (lines 227&ndash;231)</li>
+    <li>Pre-populate form fields:
+      <ul>
+        <li><code>tbxExpenseName.text = expenseName</code> (line 235)</li>
+        <li><code>tbxAmount.text = expenditure</code> (with &#8377; prefix) (line 236)</li>
+        <li><code>calDateOfPurchanse.dateComponents</code> from parsed date (line 237)</li>
+        <li>Populate employee list and category dropdowns (lines 239&ndash;240)</li>
+        <li><code>lbxSelectCategory.selectedKey = categoryID</code> (line 241)</li>
+        <li><code>cbxEmpList.selectedKeys = employeeIDs</code> (line 242)</li>
+      </ul>
+    </li>
+    <li><strong>TODO noted in original code</strong> (line 233): &ldquo;Populate comments from employee-expense&rdquo; &mdash; not yet implemented in original</li>
+  </ol>
+  
+  <p><span class="label">Output:</span> Update Expense form shown with all fields pre-populated.</p>
+</div>
+
+<!-- FR-015 -->
+<div class="fr-box" id="fr015">
+  <h4><span class="fr-id">FR-015</span> &mdash; Category CRUD</h4>
+  <p><span class="source-ref">Source: modules/Category.js lines 3&ndash;69</span></p>
+  
+  <p><span class="label">Description:</span> Create, Read, Update, and Delete category records.</p>
+  
+  <p><span class="label">Operations:</span></p>
+  <table>
+    <tr><th>Operation</th><th>Input</th><th>Behavior</th><th>Source Lines</th></tr>
+    <tr>
+      <td>Create</td>
+      <td><code>name</code> (from tbxCategoryName), <code>description</code> (from tbxCategoryDesc)</td>
+      <td>Creates category record, navigates to Add Expense form on success/failure</td>
+      <td>3&ndash;20</td>
+    </tr>
+    <tr>
+      <td>Read</td>
+      <td>None</td>
+      <td>Fetches all category records via <code>objCategory.get({})</code></td>
+      <td>57&ndash;70</td>
+    </tr>
+    <tr>
+      <td>Update</td>
+      <td><code>name</code>, <code>description</code> (optional)</td>
+      <td>Updates category by primary key</td>
+      <td>22&ndash;42</td>
+    </tr>
+    <tr>
+      <td>Delete</td>
+      <td><code>id</code> (primary key)</td>
+      <td>Deletes category by primary key</td>
+      <td>44&ndash;55</td>
+    </tr>
+  </table>
+</div>
+
+<!-- FR-016 -->
+<div class="fr-box" id="fr016">
+  <h4><span class="fr-id">FR-016</span> &mdash; Employee CRUD</h4>
+  <p><span class="source-ref">Source: modules/Employee.js lines 3&ndash;73</span></p>
+  
+  <p><span class="label">Description:</span> Create, Read, Update, and Delete employee records.</p>
+  
+  <p><span class="label">Operations:</span></p>
+  <table>
+    <tr><th>Operation</th><th>Input</th><th>Behavior</th><th>Source Lines</th></tr>
+    <tr>
+      <td>Create</td>
+      <td><code>id</code> (user-provided string, from tbxEmployeeID), <code>name</code> (from tbxEmployeeName), <code>isAdmin</code> (from radiobtnIsAdmin: selectedKey === 0 &rarr; true, else false)</td>
+      <td>Creates employee record, navigates to Dashboard</td>
+      <td>3&ndash;24</td>
+    </tr>
+    <tr>
+      <td>Read</td>
+      <td>None</td>
+      <td>Fetches all employee records via <code>objEmployee.get({})</code></td>
+      <td>61&ndash;74</td>
+    </tr>
+    <tr>
+      <td>Update</td>
+      <td><code>name</code>, <code>id</code> (optional fields)</td>
+      <td>Updates employee by primary key</td>
+      <td>26&ndash;46</td>
+    </tr>
+    <tr>
+      <td>Delete</td>
+      <td><code>id</code> (primary key)</td>
+      <td>Deletes employee by primary key</td>
+      <td>48&ndash;59</td>
+    </tr>
+  </table>
+</div>
+
+<!-- FR-017 -->
+<div class="fr-box" id="fr017">
+  <h4><span class="fr-id">FR-017</span> &mdash; App Initialization</h4>
+  <p><span class="source-ref">Source: modules/ApplicationAPIs.js lines 10&ndash;42</span></p>
+  
+  <p><span class="label">Description:</span> Initialize the application when the user clicks the Login button.</p>
+  
+  <p><span class="label">Business Rules:</span></p>
+  <ol>
+    <li>On login button click, call <code>setup()</code> (triggered via <code>OnClickLogin.js</code>)</li>
+    <li>Show loading spinner: <code>flxMainKA.setVisibility(false)</code>, <code>flxPopupKA.setVisibility(true)</code> (lines 11&ndash;12)</li>
+    <li>Initialize Kony offline objects and object service (lines 22&ndash;28):
+      <ul>
+        <li>Create <code>KNYObjSvc("ExpenseTrackerOS")</code></li>
+        <li>Get SDK objects for: category, employee, expense, employee_expense</li>
+      </ul>
+    </li>
+    <li>Sync data with backend via <code>syncExpenseOS()</code> (line 29)</li>
+    <li>On sync success, call <code>populateDataInDashboardForm()</code> and navigate to Dashboard (line 30)</li>
+    <li>On success: hide spinner, show main content (lines 19&ndash;20)</li>
+  </ol>
+  
+  <p><span class="label">New App Simplification:</span> No Kony SDK needed. Login simply redirects to the Dashboard page. Data is fetched directly from PostgreSQL via REST API.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- 1.5  SCREEN REQUIREMENTS                                     -->
+<!-- ============================================================ -->
+<h2 id="s5">5. Screen Requirements</h2>
+<p>Screen definitions are sourced from the Kony form files in <code>forms/desktop/</code>.</p>
+
+<!-- Login Screen -->
+<div class="screen-box" id="s5-1">
+  <h4>5.1 Login Screen (frmLoginKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmLoginKA.sm</span></p>
+  <table>
+    <tr><th style="width:180px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>Login Button</td><td>Button</td><td>Triggers <code>setup()</code> via <code>OnClickLogin.js</code></td></tr>
+    <tr><td>flxMainKA</td><td>Container</td><td>Main content area (hidden during loading)</td></tr>
+    <tr><td>flxPopupKA</td><td>Container</td><td>Loading spinner overlay (shown during setup)</td></tr>
+  </table>
+  <p><strong>Navigation:</strong> Login button &rarr; Dashboard (frmDashboardKA)</p>
+</div>
+
+<!-- Dashboard -->
+<div class="screen-box" id="s5-2">
+  <h4>5.2 Dashboard (frmDashboardKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmDashboardKA.sm</span></p>
+  <table>
+    <tr><th style="width:220px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>segExpenses</td><td>Segment (List)</td><td>Expense list with columns: date, expenseName, categoryName, expenditure, image. Row click &rarr; Update Expense form.</td></tr>
+    <tr><td>segEmployees</td><td>Segment (List)</td><td>Employee shares list with columns: name, employeeShare, Settle Up button, employeeID</td></tr>
+    <tr><td>lblDetails</td><td>Label</td><td>Shows &ldquo;Amount Spent: &#8377;X&rdquo;</td></tr>
+    <tr><td>lblMoneyOwed</td><td>Label</td><td>Shows &ldquo;Gets back: &#8377;X&rdquo;</td></tr>
+    <tr><td>txtSearchEmployee</td><td>Text Input</td><td>Search bar for filtering employees by name</td></tr>
+    <tr><td>btnSearch</td><td>Button</td><td>Triggers <code>searchByEmployeeName()</code></td></tr>
+    <tr><td>btnClearSearch</td><td>Button</td><td>Triggers <code>clearSearchByEmployeeName()</code></td></tr>
+    <tr><td>btnAddExpense</td><td>Button</td><td>Navigate to Add Expense form</td></tr>
+    <tr><td>btnAddEmployee</td><td>Button</td><td>Navigate to Add Employee form</td></tr>
+    <tr><td>btnReset</td><td>Button</td><td>Triggers <code>reset()</code> to re-sync data</td></tr>
+    <tr><td>btnSync</td><td>Button</td><td>Triggers <code>syncExpenseOS()</code></td></tr>
+  </table>
+  <p><strong>Navigation:</strong></p>
+  <ul>
+    <li>Expense row click &rarr; Update Expense (frmUpdateExpenseKA)</li>
+    <li>Settle Up button click &rarr; Settle Up (frmSettleupKA)</li>
+    <li>Add Expense button &rarr; Add Expense (frmAddExpenseKA)</li>
+    <li>Add Employee button &rarr; Add Employee (frmAddEmployeeKA)</li>
+  </ul>
+</div>
+
+<!-- Add Expense -->
+<div class="screen-box" id="s5-3">
+  <h4>5.3 Add Expense (frmAddExpenseKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmAddExpenseKA.sm</span></p>
+  <p><strong>OnPostShow:</strong> Calls <code>resetAddExpenseForm()</code> + <code>populateDataInAddExpenseForm()</code> via <code>OnPostShowPopulateData.js</code></p>
+  <table>
+    <tr><th style="width:220px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tbxExpenseName</td><td>Text Input</td><td>Expense name (required)</td></tr>
+    <tr><td>tbxAmount</td><td>Text Input</td><td>Expense amount (required, number &gt; 0)</td></tr>
+    <tr><td>lbxSelectCategory</td><td>Dropdown (ListBox)</td><td>Category selection, populated from category records</td></tr>
+    <tr><td>cbxEmpList</td><td>Checkbox Group</td><td>Multi-select employee checkboxes, populated from employee records</td></tr>
+    <tr><td>calDateOfPurchanse</td><td>Date Picker</td><td>Date of purchase (note: typo &ldquo;Purchanse&rdquo; preserved from original)</td></tr>
+    <tr><td>tbxDescriptionNew</td><td>Text Input</td><td>Optional comment/description</td></tr>
+    <tr><td>imgSelectAll</td><td>Image (toggle)</td><td>Select All employees radio button</td></tr>
+    <tr><td>imgClearAll</td><td>Image (toggle)</td><td>Clear All employees radio button</td></tr>
+    <tr><td>btnProceed</td><td>Button</td><td>Submit: calls <code>addExpense()</code></td></tr>
+    <tr><td>btnCancel</td><td>Button</td><td>Cancel: navigates back to Dashboard</td></tr>
+    <tr><td>btnAddCategory</td><td>Button</td><td>Navigate to Add Category form</td></tr>
+  </table>
+  <p><strong>Navigation:</strong></p>
+  <ul>
+    <li>Proceed (submit) &rarr; Dashboard (on success)</li>
+    <li>Cancel &rarr; Dashboard</li>
+    <li>Add Category &rarr; Add Category (frmAddCategoryKA)</li>
+  </ul>
+</div>
+
+<!-- Update Expense -->
+<div class="screen-box" id="s5-4">
+  <h4>5.4 Update Expense (frmUpdateExpenseKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmUpdateExpenseKA.sm</span></p>
+  <table>
+    <tr><th style="width:220px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tbxExpenseName</td><td>Text Input</td><td>Pre-populated expense name</td></tr>
+    <tr><td>tbxAmount</td><td>Text Input</td><td>Pre-populated amount (with &#8377; prefix)</td></tr>
+    <tr><td>lbxSelectCategory</td><td>Dropdown (ListBox)</td><td>Pre-selected category</td></tr>
+    <tr><td>cbxEmpList</td><td>Checkbox Group</td><td>Pre-selected employees</td></tr>
+    <tr><td>calDateOfPurchanse</td><td>Date Picker</td><td>Pre-populated date</td></tr>
+    <tr><td>tbxDescriptionNew</td><td>Text Input</td><td>Description/comment field</td></tr>
+    <tr><td>btnUpdate</td><td>Button</td><td>Submit update: calls <code>updateExpenseRecord()</code>, then navigates to Dashboard</td></tr>
+    <tr><td>btnDelete</td><td>Button</td><td>Delete expense: calls <code>deleteExpenseRecord()</code>, then navigates to Dashboard</td></tr>
+    <tr><td>btnCancel</td><td>Button</td><td>Cancel: navigates back to Dashboard</td></tr>
+  </table>
+  <p><strong>Navigation:</strong></p>
+  <ul>
+    <li>Update &rarr; Dashboard</li>
+    <li>Delete &rarr; Dashboard</li>
+    <li>Cancel &rarr; Dashboard</li>
+  </ul>
+</div>
+
+<!-- Add Category -->
+<div class="screen-box" id="s5-5">
+  <h4>5.5 Add Category (frmAddCategoryKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmAddCategoryKA.sm</span></p>
+  <table>
+    <tr><th style="width:220px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tbxCategoryName</td><td>Text Input</td><td>Category name (required)</td></tr>
+    <tr><td>tbxCategoryDesc</td><td>Text Input</td><td>Category description</td></tr>
+    <tr><td>btnCreate</td><td>Button</td><td>Create category: calls <code>createCategory()</code></td></tr>
+    <tr><td>btnCancel</td><td>Button</td><td>Cancel: navigates back to Add Expense form</td></tr>
+  </table>
+  <p><strong>Navigation:</strong></p>
+  <ul>
+    <li>Create &rarr; Add Expense (frmAddExpenseKA)</li>
+    <li>Cancel &rarr; Add Expense (frmAddExpenseKA)</li>
+  </ul>
+</div>
+
+<!-- Add Employee -->
+<div class="screen-box" id="s5-6">
+  <h4>5.6 Add Employee (frmAddEmployeeKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmAddEmployeeKA.sm</span></p>
+  <table>
+    <tr><th style="width:220px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tbxEmployeeID</td><td>Text Input</td><td>Employee ID (user-provided string, e.g. &ldquo;EMP006&rdquo;)</td></tr>
+    <tr><td>tbxEmployeeName</td><td>Text Input</td><td>Employee name</td></tr>
+    <tr><td>radiobtnIsAdmin</td><td>Radio Button</td><td>Is Admin? (selectedKey 0 = true, else false)</td></tr>
+    <tr><td>btnCreate</td><td>Button</td><td>Create employee: calls <code>createEmployee()</code></td></tr>
+    <tr><td>btnCancel</td><td>Button</td><td>Cancel: navigates back to Dashboard</td></tr>
+  </table>
+  <p><strong>Navigation:</strong></p>
+  <ul>
+    <li>Create &rarr; Dashboard</li>
+    <li>Cancel &rarr; Dashboard</li>
+  </ul>
+</div>
+
+<!-- Settle Up -->
+<div class="screen-box" id="s5-7">
+  <h4>5.7 Settle Up (frmSettleupKA)</h4>
+  <p><span class="source-ref">Source: forms/desktop/frmSettleupKA.sm</span></p>
+  <table>
+    <tr><th style="width:220px">Element</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tbxEmployee</td><td>Text Input (readonly)</td><td>Employee name (disabled)</td></tr>
+    <tr><td>tbxTotalShare</td><td>Text Input (readonly)</td><td>Total share amount (disabled)</td></tr>
+    <tr><td>lbxSelectExpense</td><td>Dropdown (ListBox)</td><td>Dropdown of unsettled expenses for this employee</td></tr>
+    <tr><td>tbxAmount</td><td>Text Input (readonly)</td><td>Individual share for selected expense (updates on selection change)</td></tr>
+    <tr><td>lblID</td><td>Hidden Label</td><td>Stores employeeID</td></tr>
+    <tr><td>btnSettleUp</td><td>Button</td><td>Settle: calls <code>settleUp()</code></td></tr>
+    <tr><td>btnCancel</td><td>Button</td><td>Cancel: navigates back to Dashboard</td></tr>
+  </table>
+  <p><strong>Navigation:</strong></p>
+  <ul>
+    <li>Settle Up &rarr; Dashboard (after settling)</li>
+    <li>Cancel &rarr; Dashboard</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- 1.6  NAVIGATION FLOW                                         -->
+<!-- ============================================================ -->
+<h2 id="s6">6. Navigation Flow</h2>
+<p>Complete navigation map derived from <code>studioactions/desktop/</code>:</p>
+
+<table>
+  <tr><th>Action File</th><th>Trigger</th><th>Function Called</th><th>Navigation Target</th></tr>
+  <tr>
+    <td><code>OnClickLogin.js</code></td>
+    <td>Login button click</td>
+    <td><code>setup()</code></td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnPostShowPopulateData.js</code></td>
+    <td>Add Expense form post-show</td>
+    <td><code>resetAddExpenseForm()</code> + <code>populateDataInAddExpenseForm()</code></td>
+    <td>&mdash; (same form)</td>
+  </tr>
+  <tr>
+    <td><code>OnCreateExpense.js</code></td>
+    <td>Add Expense button (Dashboard)</td>
+    <td>Clears form fields, shows form</td>
+    <td>frmAddExpenseKA</td>
+  </tr>
+  <tr>
+    <td><code>OnRowClickExpense.js</code></td>
+    <td>Expense row click (Dashboard)</td>
+    <td><code>populateDataInUpdateExpenseForm()</code></td>
+    <td>frmUpdateExpenseKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickUpdateExpense.js</code></td>
+    <td>Update button (Update Expense)</td>
+    <td><code>updateExpenseRecord()</code></td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>onClickDeleteExpense.js</code></td>
+    <td>Delete button (Update Expense)</td>
+    <td><code>deleteExpenseRecord()</code></td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickSettleup.js</code></td>
+    <td>Settle Up button (Dashboard employee row)</td>
+    <td><code>populateDataInSettleupForm()</code></td>
+    <td>frmSettleupKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickAddSettleup.js</code></td>
+    <td>Settle Up button (Settle-Up form)</td>
+    <td><code>settleUp()</code></td>
+    <td>frmDashboardKA (via refresh)</td>
+  </tr>
+  <tr>
+    <td><code>OnExpenseSelection.js</code></td>
+    <td>Expense dropdown change (Settle-Up)</td>
+    <td><code>OnExpenseSelectionChanged()</code></td>
+    <td>&mdash; (same form, updates amount)</td>
+  </tr>
+  <tr>
+    <td><code>OnClickAddCategory.js</code></td>
+    <td>Add Category button</td>
+    <td>Clears form fields, shows form</td>
+    <td>frmAddCategoryKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickCreateCategory.js</code></td>
+    <td>Create button (Add Category)</td>
+    <td><code>createCategory()</code></td>
+    <td>frmAddExpenseKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickAddEmployee.js</code></td>
+    <td>Add Employee button</td>
+    <td>Clears form fields, shows form</td>
+    <td>frmAddEmployeeKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickCreateEmployee.js</code></td>
+    <td>Create button (Add Employee)</td>
+    <td><code>createEmployee()</code></td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickSearch.js</code></td>
+    <td>Search button (Dashboard)</td>
+    <td><code>searchByEmployeeName()</code></td>
+    <td>&mdash; (filters employee list)</td>
+  </tr>
+  <tr>
+    <td><code>OnClearSearch.js</code></td>
+    <td>Clear Search button (Dashboard)</td>
+    <td><code>clearSearchByEmployeeName()</code></td>
+    <td>&mdash; (restores employee list)</td>
+  </tr>
+  <tr>
+    <td><code>OnSelectAllEmp.js</code></td>
+    <td>Select All image click (Add Expense)</td>
+    <td><code>selectAll()</code></td>
+    <td>&mdash; (toggles selection)</td>
+  </tr>
+  <tr>
+    <td><code>OnClearAllEmp.js</code></td>
+    <td>Clear All image click (Add Expense)</td>
+    <td><code>clearAll()</code></td>
+    <td>&mdash; (toggles selection)</td>
+  </tr>
+  <tr>
+    <td><code>OnCancelExpense.js</code></td>
+    <td>Cancel button (Add Expense)</td>
+    <td>&mdash;</td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnCancelAddCategory.js</code></td>
+    <td>Cancel button (Add Category)</td>
+    <td>&mdash;</td>
+    <td>frmAddExpenseKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickCancelUpdateExpense.js</code></td>
+    <td>Cancel button (Update Expense)</td>
+    <td>&mdash;</td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickCancelSettleup.js</code></td>
+    <td>Cancel button (Settle-Up)</td>
+    <td>&mdash;</td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickCancelEmployee.js</code></td>
+    <td>Cancel button (Add Employee)</td>
+    <td>&mdash;</td>
+    <td>frmDashboardKA</td>
+  </tr>
+  <tr>
+    <td><code>OnClickReset.js</code></td>
+    <td>Reset button (Dashboard)</td>
+    <td><code>reset()</code></td>
+    <td>&mdash; (re-syncs data)</td>
+  </tr>
+  <tr>
+    <td><code>OnClickSync.js</code></td>
+    <td>Sync button (Dashboard)</td>
+    <td><code>syncExpenseOS()</code></td>
+    <td>&mdash; (syncs and refreshes)</td>
+  </tr>
+</table>
+
+<h3>Navigation Diagram</h3>
+<pre><code>
+                          +----------------+
+                          |  frmLoginKA    |
+                          |  (Login)       |
+                          +-------+--------+
+                                  |
+                           OnClickLogin
+                           setup()
+                                  |
+                                  v
+                    +-------------+-------------+
+                    |     frmDashboardKA        |
+                    |     (Dashboard)           |
+                    |                           |
+                    |  [Expense List]  [Emp List]|
+                    +--+---+---+---+---+---+----+
+                       |   |   |   |   |   |
+          OnCreateExpense  |   |   |   |   OnClickAddEmployee
+              |            |   |   |   |        |
+              v            |   |   |   |        v
+     +-----------------+   |   |   |   |  +-----------------+
+     | frmAddExpenseKA |   |   |   |   |  |frmAddEmployeeKA |
+     | (Add Expense)   |   |   |   |   |  | (Add Employee)  |
+     +--+-----------+--+   |   |   |   |  +--------+--------+
+        |           |      |   |   |   |           |
+  OnClickAddCategory|      |   |   |   |    OnClickCreateEmployee
+        |       Proceed    |   |   |   |           |
+        v      (submit)    |   |   |   |           v
+  +----------------+ |     |   |   |   |     frmDashboardKA
+  |frmAddCategoryKA| |     |   |   |   |
+  |(Add Category)  | |     |   |   |   |
+  +-------+--------+ |     |   |   |   |
+          |           |     |   |   |   |
+   OnClickCreateCategory   |   |   |   |
+          |           |     |   |   |   |
+          v           v     |   |   |   |
+    frmAddExpenseKA  frmDashboardKA |   |
+                            |   |   |   |
+                 OnRowClickExpense  |   |
+                            |       |   |
+                            v       |   |
+                  +------------------+  |
+                  |frmUpdateExpenseKA|  |
+                  |(Update Expense)  |  |
+                  +--+--------+--+--+  |
+                     |        |  |     |
+               Update    Delete  Cancel|
+                     |        |  |     |
+                     v        v  v     |
+                   frmDashboardKA      |
+                                       |
+                            OnClickSettleup
+                                       |
+                                       v
+                              +-----------------+
+                              | frmSettleupKA   |
+                              | (Settle Up)     |
+                              +--------+--------+
+                                       |
+                                OnClickAddSettleup
+                                  settleUp()
+                                       |
+                                       v
+                                 frmDashboardKA
+</code></pre>
+
+<!-- ============================================================ -->
+<!-- 1.7  NON-FUNCTIONAL REQUIREMENTS                             -->
+<!-- ============================================================ -->
+<h2 id="s7">7. Non-Functional Requirements</h2>
+
+<table>
+  <tr><th style="width:50px">ID</th><th style="width:220px">Requirement</th><th>Details</th></tr>
+  <tr>
+    <td>NFR-001</td>
+    <td>Currency Display</td>
+    <td>All monetary values must be displayed with the Indian Rupee symbol (&#8377;) as a prefix. The original code uses <code>parseInt()</code> in some places (line 151 of EmployeeExpense.js) and <code>parseFloat()</code> in others (line 109 of Module.js). The new application must standardize to <strong>2 decimal places</strong> for consistency (e.g., &ldquo;&#8377;1000.00&rdquo;).</td>
+  </tr>
+  <tr>
+    <td>NFR-002</td>
+    <td>Date Format</td>
+    <td>All dates must be displayed in ISO 8601 format, truncated to date only: <code>YYYY-MM-DD</code>. Source: <code>Expense.js</code> line 99 uses <code>toISOString().substring(0, 10)</code>.</td>
+  </tr>
+  <tr>
+    <td>NFR-003</td>
+    <td>Self-Contained Application</td>
+    <td>The application must be fully self-contained with no external authentication service required. The original Kony app uses Kony SDK for offline objects and sync; the new app replaces this with direct PostgreSQL access via REST API.</td>
+  </tr>
+  <tr>
+    <td>NFR-004</td>
+    <td>Database</td>
+    <td>PostgreSQL 15 as the sole persistent data store, accessed via Prisma ORM. Must support all CRUD operations, cascading deletes (ON DELETE CASCADE for employee_expense &rarr; expense), and efficient aggregation queries.</td>
+  </tr>
+  <tr>
+    <td>NFR-005</td>
+    <td>Technology Stack</td>
+    <td>Frontend: React 18 + TypeScript + Vite + React Router v6 + TanStack Query v5. Styling: Tailwind CSS + shadcn/ui. Backend: Node.js + Express + TypeScript. ORM: Prisma. Testing: Vitest + Playwright + Supertest.</td>
+  </tr>
+  <tr>
+    <td>NFR-006</td>
+    <td>Responsive Design</td>
+    <td>The application should be usable on desktop browsers. The original Kony app targets desktop form factor (<code>forms/desktop/</code>).</td>
+  </tr>
+  <tr>
+    <td>NFR-007</td>
+    <td>Data Integrity</td>
+    <td>All expense creation and update operations involving multiple records (expense + employee_expense) must be wrapped in database transactions to ensure atomicity.</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- 1.8  TRACEABILITY MATRIX                                     -->
+<!-- ============================================================ -->
+<h2 id="s8">8. Traceability Matrix</h2>
+<p>Mapping each functional requirement to its source file, target API endpoint, target React component, and target test file.</p>
+
+<table>
+  <tr>
+    <th>FR ID</th>
+    <th>Title</th>
+    <th>Source File : Lines</th>
+    <th>API Endpoint</th>
+    <th>React Component</th>
+    <th>Test File(s)</th>
+  </tr>
+  <tr>
+    <td>FR-001</td>
+    <td>Add Expense with Equal Split</td>
+    <td><code>modules/Module.js:1&ndash;63</code></td>
+    <td><code>POST /api/expenses</code></td>
+    <td><code>AddExpensePage.tsx</code></td>
+    <td><code>expenseService.test.ts</code> (TC-U-001 to TC-U-004), <code>expenses.integration.test.ts</code> (TC-I-001, TC-I-002), <code>add-expense.spec.ts</code> (TC-E2E-006 to TC-E2E-009)</td>
+  </tr>
+  <tr>
+    <td>FR-002</td>
+    <td>Settle Up</td>
+    <td><code>modules/Module.js:66&ndash;87</code></td>
+    <td><code>POST /api/settle</code></td>
+    <td><code>SettleUpPage.tsx</code></td>
+    <td><code>settleService.test.ts</code> (TC-U-009, TC-U-010), <code>settle.integration.test.ts</code> (TC-I-012, TC-I-013), <code>settle-up.spec.ts</code> (TC-E2E-015 to TC-E2E-017)</td>
+  </tr>
+  <tr>
+    <td>FR-003</td>
+    <td>Update Expense with Re-split</td>
+    <td><code>modules/Module.js:450&ndash;595</code></td>
+    <td><code>PUT /api/expenses/:id</code></td>
+    <td><code>EditExpensePage.tsx</code></td>
+    <td><code>expenseService.test.ts</code> (TC-U-005 to TC-U-007), <code>expenses.integration.test.ts</code> (TC-I-004, TC-I-005), <code>edit-expense.spec.ts</code> (TC-E2E-010 to TC-E2E-012)</td>
+  </tr>
+  <tr>
+    <td>FR-004</td>
+    <td>Delete Expense (Cascade)</td>
+    <td><code>modules/Module.js:379&ndash;446</code></td>
+    <td><code>DELETE /api/expenses/:id</code></td>
+    <td><code>EditExpensePage.tsx</code></td>
+    <td><code>expenseService.test.ts</code> (TC-U-008), <code>expenses.integration.test.ts</code> (TC-I-006, TC-I-007), <code>delete-expense.spec.ts</code> (TC-E2E-013, TC-E2E-014)</td>
+  </tr>
+  <tr>
+    <td>FR-005</td>
+    <td>Dashboard &mdash; Expense List</td>
+    <td><code>modules/Expense.js:73&ndash;129</code></td>
+    <td><code>GET /api/expenses</code></td>
+    <td><code>DashboardPage.tsx</code></td>
+    <td><code>dashboard.integration.test.ts</code> (TC-I-008), <code>dashboard.spec.ts</code> (TC-E2E-002)</td>
+  </tr>
+  <tr>
+    <td>FR-006</td>
+    <td>Dashboard &mdash; Total Amount Spent</td>
+    <td><code>modules/Module.js:104&ndash;114</code></td>
+    <td><code>GET /api/dashboard/summary</code></td>
+    <td><code>DashboardPage.tsx</code></td>
+    <td><code>dashboardService.test.ts</code> (TC-U-013), <code>dashboard.integration.test.ts</code> (TC-I-008), <code>dashboard.spec.ts</code> (TC-E2E-003)</td>
+  </tr>
+  <tr>
+    <td>FR-007</td>
+    <td>Dashboard &mdash; Employee Shares</td>
+    <td><code>modules/EmployeeExpense.js:129&ndash;171</code></td>
+    <td><code>GET /api/dashboard/employee-shares</code></td>
+    <td><code>DashboardPage.tsx</code></td>
+    <td><code>dashboardService.test.ts</code> (TC-U-014 to TC-U-016), <code>dashboard.integration.test.ts</code> (TC-I-009), <code>dashboard.spec.ts</code> (TC-E2E-004, TC-E2E-005)</td>
+  </tr>
+  <tr>
+    <td>FR-008</td>
+    <td>Per-Category Expense Totals</td>
+    <td><code>modules/Expense.js:134&ndash;183</code></td>
+    <td><code>GET /api/dashboard/by-category</code></td>
+    <td><code>DashboardPage.tsx</code></td>
+    <td><code>dashboardService.test.ts</code> (TC-U-017, TC-U-018), <code>dashboard.integration.test.ts</code> (TC-I-010)</td>
+  </tr>
+  <tr>
+    <td>FR-009</td>
+    <td>Populate Settle-Up Form</td>
+    <td><code>modules/Module.js:259&ndash;307</code></td>
+    <td><code>GET /api/employees/:id/unsettled</code></td>
+    <td><code>SettleUpPage.tsx</code></td>
+    <td><code>settleService.test.ts</code> (TC-U-011, TC-U-012), <code>settle.integration.test.ts</code> (TC-I-014)</td>
+  </tr>
+  <tr>
+    <td>FR-010</td>
+    <td>Expense Selection Changed</td>
+    <td><code>modules/Module.js:309&ndash;320</code></td>
+    <td>&mdash; (client-side)</td>
+    <td><code>SettleUpPage.tsx</code></td>
+    <td><code>SettleUpPage.test.tsx</code> (TC-F-006)</td>
+  </tr>
+  <tr>
+    <td>FR-011</td>
+    <td>Search Employees by Name</td>
+    <td><code>modules/Module.js:357&ndash;375</code></td>
+    <td><code>GET /api/employees?search=X</code></td>
+    <td><code>DashboardPage.tsx</code></td>
+    <td><code>employeeService.test.ts</code> (TC-U-025, TC-U-026), <code>crud.integration.test.ts</code> (TC-I-017), <code>search.spec.ts</code></td>
+  </tr>
+  <tr>
+    <td>FR-012</td>
+    <td>Select All / Clear All</td>
+    <td><code>modules/Module.js:331&ndash;355</code></td>
+    <td>&mdash; (client-side)</td>
+    <td><code>AddExpensePage.tsx</code></td>
+    <td><code>AddExpensePage.test.tsx</code> (TC-F-004)</td>
+  </tr>
+  <tr>
+    <td>FR-013</td>
+    <td>Reset Add Expense Form</td>
+    <td><code>modules/Module.js:322&ndash;326</code></td>
+    <td>&mdash; (client-side)</td>
+    <td><code>AddExpensePage.tsx</code></td>
+    <td><code>AddExpensePage.test.tsx</code> (TC-F-003)</td>
+  </tr>
+  <tr>
+    <td>FR-014</td>
+    <td>Populate Update Expense Form</td>
+    <td><code>modules/Module.js:217&ndash;254</code></td>
+    <td><code>GET /api/expenses/:id</code></td>
+    <td><code>EditExpensePage.tsx</code></td>
+    <td><code>EditExpensePage.test.tsx</code> (TC-F-005), <code>edit-expense.spec.ts</code> (TC-E2E-010)</td>
+  </tr>
+  <tr>
+    <td>FR-015</td>
+    <td>Category CRUD</td>
+    <td><code>modules/Category.js:3&ndash;69</code></td>
+    <td><code>GET/POST/PUT/DELETE /api/categories</code></td>
+    <td><code>AddCategoryPage.tsx</code></td>
+    <td><code>categoryService.test.ts</code> (TC-U-019 to TC-U-022), <code>crud.integration.test.ts</code> (TC-I-015), <code>add-category.spec.ts</code></td>
+  </tr>
+  <tr>
+    <td>FR-016</td>
+    <td>Employee CRUD</td>
+    <td><code>modules/Employee.js:3&ndash;73</code></td>
+    <td><code>GET/POST/PUT/DELETE /api/employees</code></td>
+    <td><code>AddEmployeePage.tsx</code></td>
+    <td><code>employeeService.test.ts</code> (TC-U-023 to TC-U-026), <code>crud.integration.test.ts</code> (TC-I-016), <code>add-employee.spec.ts</code></td>
+  </tr>
+  <tr>
+    <td>FR-017</td>
+    <td>App Initialization</td>
+    <td><code>modules/ApplicationAPIs.js:10&ndash;42</code></td>
+    <td>&mdash; (client redirect)</td>
+    <td><code>LoginPage.tsx</code></td>
+    <td><code>login.spec.ts</code> (TC-E2E-001)</td>
+  </tr>
+</table>
+
+<!-- Footer -->
+<hr style="margin-top: 3rem; border-color: var(--border);">
+<p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+  Team Expense Tracker &mdash; User Requirements Specification v1.0 &mdash; Generated 2026-04-07
+  <br>Source: <code>SachetCognition/Kony_TeamExpenses</code> (branch: master)
+</p>
+
+</body>
+</html>
